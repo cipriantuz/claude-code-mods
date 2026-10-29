@@ -1,0 +1,9 @@
+{
+  "name": "anti-polling",
+  "version": "0.1.0",
+  "description": "Stops wait-only turns: a command that only sleeps, and the 3rd identical check in a row with nothing changed in between",
+  "author": {
+    "name": "Ciprian Tuzaru"
+  },
+  "license": "MIT"
+}

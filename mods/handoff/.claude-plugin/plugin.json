@@ -1,0 +1,9 @@
+{
+  "name": "handoff",
+  "version": "0.2.0",
+  "description": "After a pause that expired the prompt cache, asks: new session with a summary, or continue here; the summary is precomputed at 55 minutes; plus /handoff on demand",
+  "author": {
+    "name": "Ciprian Tuzaru"
+  },
+  "license": "MIT"
+}
