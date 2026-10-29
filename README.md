@@ -72,9 +72,9 @@ The runner calls `claude plugin test` on every mod folder (Claude Code's own mod
 
 - The author's setup has 7 mods; this repository contains the 6 general-purpose ones and leaves out one tied to a private service.
 - The mod API is specific to Claude Code and versioned with it; these mods were written and tested against 2.1.x.
-- Tested mainly on Windows 11 (Git Bash and PowerShell tools), the author's environment. The dispatcher has POSIX locking code, exercised only by CI.
+- Tested mainly on Windows 11 (Git Bash and PowerShell tools), the author's environment. CI runs all tests on `windows-latest`, and the dispatcher tests also on `ubuntu-latest`, the only place its POSIX locking code runs. The TypeScript tests use Windows path fixtures (`USERPROFILE`, drive letters), so they are not run on Linux.
 - anti-polling does not catch alternating checks; handoff does not ask after `claude --resume`; sessions cannot delete old status files; on a public ntfy server the topic is the only access control. Details in each mod's README.
-- CI is configured but has not run yet (it runs on the first push); it assumes `claude plugin test` works on a fresh runner without a login.
+- CI installs the current Claude Code from npm; `claude plugin test` works on a fresh runner without a login.
 
 ## How this was built
 
