@@ -1,7 +1,7 @@
 // When a Bash command breaks a Windows path. No side effects: register.ts uses
 // it, the tests check it directly.
 
-// A Windows path with backslashes: `D:\work`, `C:\\Users` or a UNC `\\server\share`.
+// A Windows path with backslashes: `D:\work`, `C:\\data` (escaped) or a UNC `\\server\share`.
 const WINDOWS_PATH = /(^|[^\w])[A-Za-z]:\\|\\\\[\w.$-]+\\/
 
 // The constructs through which backslashes no longer reach the program untouched:
