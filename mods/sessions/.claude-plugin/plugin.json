@@ -1,0 +1,10 @@
+{
+  "name": "sessions",
+  "version": "0.1.0",
+  "description": "Sessions in the same folder see each other: what each one does, which ones wait for you, a warning when two sessions edit the same file; /sessions lists them all. No model calls.",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "Ciprian Tuzaru"
+  },
+  "license": "MIT"
+}
