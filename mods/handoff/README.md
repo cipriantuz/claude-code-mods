@@ -4,7 +4,7 @@ Cache-aware session handoff: after a pause long enough for the prompt cache to e
 
 ## Problem
 
-The prompt cache lives for about an hour. Coming back to a session with 250k tokens of context after a lunch break re-writes all of it into the cache on the first prompt. In one measured week of the author's sessions, 40 such resumes re-wrote ~290k tokens each, 30% of all cache writes.
+The prompt cache lives for about an hour. Coming back to a session with 250k tokens of context after a lunch break re-writes all of it into the cache on the first prompt. In one measured week of my sessions, 40 such resumes re-wrote ~290k tokens each, 30% of all cache writes.
 
 ## Install
 

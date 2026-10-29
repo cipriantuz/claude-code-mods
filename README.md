@@ -1,8 +1,10 @@
 # claude-code-mods
 
-Six [Claude Code](https://code.claude.com) mods (in-process plugins written against the Claude Code mod API) that make long agent sessions cheaper and safer: they stop wait-only turns, hand off to a fresh session when the prompt cache has expired, let the model compact at the end of a task, warn when two sessions edit the same file, add a phone approval channel, and block a class of Windows path corruption.
+These are six [Claude Code](https://code.claude.com) mods I built to make long agent sessions cheaper and safer. A mod is an in-process plugin written against the Claude Code mod API.
 
-They came out of measuring the author's own sessions: polling and repeated checks were 6.4% of all input tokens, and resumes after a cache expiry were 30% of all cache writes. Every turn re-reads the whole context, so the cheapest turn is the one that never happens.
+They came out of measuring my own sessions: polling and repeated checks were 6.4% of all input tokens, and resumes after a cache expiry were 30% of all cache writes. Every turn re-reads the whole context, so the cheapest turn is the one that never happens. I also work on Windows 11 and often run several sessions in parallel, and that's what the sessions and windows-paths mods are for.
+
+Between them, they stop wait-only turns, hand off to a fresh session when the prompt cache has expired, let the model compact at the end of a task, warn when two sessions edit the same file, let me approve and answer from my phone, and block a class of Windows path corruption.
 
 | Mod | What it does | Language | Tests |
 |---|---|---|---|
@@ -58,7 +60,7 @@ python -m pip install pytest   # only for the dispatcher tests
 npm test                       # = node scripts/test-all.mjs
 ```
 
-The runner calls `claude plugin test` on every mod folder (Claude Code's own mod test kit: a simulated engine, clock, disk and session, no model, no network) and `python -m pytest` on the dispatcher (against a local fake ntfy HTTP server). Everything runs offline. `.github/workflows/ci.yml` runs the same command on Ubuntu.
+The runner calls `claude plugin test` on every mod folder (Claude Code's own mod test kit: a simulated engine, clock, disk and session, no model, no network) and `python -m pytest` on the dispatcher (against a local fake ntfy HTTP server). Everything runs offline. In CI (`.github/workflows/ci.yml`), one job installs Claude Code from npm and runs `npm test` on `windows-latest`; a second job runs only the dispatcher tests on `ubuntu-latest`.
 
 ## Design decisions
 
@@ -70,28 +72,28 @@ The runner calls `claude plugin test` on every mod folder (Claude Code's own mod
 
 ## Limitations
 
-- The author's setup has 7 mods; this repository contains the 6 general-purpose ones and leaves out one tied to a private service.
+- My own setup has 7 mods. This repository has the 6 general-purpose ones and leaves out one that's tied to a private service.
 - The mod API is specific to Claude Code and versioned with it; these mods were written and tested against 2.1.x.
-- Tested mainly on Windows 11 (Git Bash and PowerShell tools), the author's environment. CI runs all tests on `windows-latest`, and the dispatcher tests also on `ubuntu-latest`, the only place its POSIX locking code runs. The TypeScript tests use Windows path fixtures (`USERPROFILE`, drive letters), so they are not run on Linux.
-- anti-polling does not catch alternating checks; handoff does not ask after `claude --resume`; sessions cannot delete old status files; on a public ntfy server the topic is the only access control. Details in each mod's README.
+- I've tested them mainly on Windows 11 (Git Bash and PowerShell tools), since that's what I work on. CI runs all tests on `windows-latest`, and the dispatcher tests also on `ubuntu-latest`, the only place its POSIX locking code runs. The TypeScript tests use Windows path fixtures (`USERPROFILE`, drive letters), so they aren't run on Linux.
+- anti-polling doesn't catch alternating checks; handoff doesn't ask after `claude --resume`; sessions can't delete old status files; on a public ntfy server the topic is the only access control. The details are in each mod's README.
 - CI installs the current Claude Code from npm; `claude plugin test` works on a fresh runner without a login.
 
-## How this was built
+## How I built it
 
-Built with AI coding agents (Claude Code), which wrote most of the code. The author owned the architecture (which problems to solve, from his own session measurements), the review gates, and the verification.
+I built these mods with AI coding agents (Claude Code), which wrote most of the code. My part was the architecture (which problems to solve, from my own session measurements), the review gates, and the verification.
 
-What was verified, and how:
+I don't take an agent's "done" at face value, so here's what I checked and how:
 
-- **The problems were measured first.** A script over the author's session transcripts counted the turns spent on polling and sleeps (1,183 turns, 6.4% of input) and the cache re-writes after pauses over an hour (40 resumes, ~290k tokens each, 30% of cache writes) before any mod was written.
-- **Offline tests for every mod** (53 TypeScript + 21 Python), run with `npm test` on this repository: all 7 suites pass.
-- **The tests can fail.** Each suite was checked by injecting a deliberate bug (e.g. streak 3 -> 4, removing the "interrupted turn" guard, dropping the once-per-file warning, shifting the alert delay) and confirming that tests fail.
-- **Live probes of the original versions** (before translation for this repository), in real Claude Code sessions:
-  - handoff: the 55-minute fork read 40.4k tokens from the cache and wrote 2.8k (of 43.2k), confirming it extends the cache instead of re-writing it; the `$.session.append` path was checked with `claude -p --input-format stream-json`.
-  - compaction: headless `claude -p` run, 66k -> 2.7k tokens with the instructions kept; the context note reached the model from the second turn.
-  - sessions: a pseudo-terminal driver started `claude`, then sent `/clear`, `/resume <id>` and `/exit`, which reproduced and then confirmed the fix for a bug where the mod went silent after `/resume`.
+- I measured the problems before any mod was written. A script over my session transcripts counted the turns spent on polling and sleeps (1,183 turns, 6.4% of input) and the cache re-writes after pauses over an hour (40 resumes, ~290k tokens each, 30% of cache writes).
+- Every mod has offline tests (53 TypeScript + 21 Python). I ran them with `npm test` on this repository, and all 7 suites pass.
+- I checked that the tests can fail: for each suite I injected a deliberate bug (e.g. streak 3 -> 4, removing the "interrupted turn" guard, dropping the once-per-file warning, shifting the alert delay) and confirmed that tests fail.
+- I probed the original versions live, in real Claude Code sessions, before they were translated for this repository:
+  - handoff: the 55-minute fork read 40.4k tokens from the cache and wrote 2.8k (of 43.2k), which confirms it extends the cache instead of re-writing it. I checked the `$.session.append` path with `claude -p --input-format stream-json`.
+  - compaction: a headless `claude -p` run compacted 66k -> 2.7k tokens and kept the instructions; the context note reached the model from the second turn.
+  - sessions: a pseudo-terminal driver started `claude`, then sent `/clear`, `/resume <id>` and `/exit`. That reproduced a bug where the mod went silent after `/resume`, and then confirmed the fix.
   - approval-channel: a real ntfy message became a prompt in a live session, and the answer arrived back on the topic.
-  - anti-polling and windows-paths were used daily for weeks.
-- **Not verified for this repository:** the public versions are translated (from Romanian) and trimmed ports of those mods (approval-channel lost three private features: a server-monitoring alert feed, a second chat topic for a coordinator session, and video transcoding for previews); they pass the offline suites above but were not re-probed live after the port. The handoff tests were updated for the current test kit, in which `$.session.append` stores the row instead of rejecting.
+  - I've used anti-polling and windows-paths daily for weeks.
+- **Not verified for this repository:** the public versions are translated (from Romanian) and trimmed ports of those mods (approval-channel lost three private features: a server-monitoring alert feed, a second chat topic for a coordinator session, and video transcoding for previews); they pass the offline suites above, but I haven't re-probed them live since the port. The handoff tests were updated for the current test kit, in which `$.session.append` stores the row instead of rejecting.
 
 ## License
 

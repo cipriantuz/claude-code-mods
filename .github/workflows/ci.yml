@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   test:
-    # The mods target Windows, the author's environment, and their tests use Windows path fixtures.
+    # The mods target Windows, my environment, and their tests use Windows path fixtures.
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

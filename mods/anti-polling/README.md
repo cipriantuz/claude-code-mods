@@ -4,7 +4,7 @@ Blocks the two tool calls that waste the most turns in long Claude Code sessions
 
 ## Problem
 
-Every tool call is a model turn, and every turn re-reads the whole context. An agent that "waits" with `sleep 60 && echo done`, or polls `curl …/status` every few seconds, pays the full context price on each call. In one measured week of the author's sessions, these calls were 1,183 turns, 6.4% of all input tokens.
+Every tool call is a model turn, and every turn re-reads the whole context. An agent that "waits" with `sleep 60 && echo done`, or polls `curl …/status` every few seconds, pays the full context price on each call. In one measured week of my sessions, these calls were 1,183 turns, 6.4% of all input tokens.
 
 ## Install
 

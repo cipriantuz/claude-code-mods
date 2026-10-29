@@ -2,7 +2,7 @@ import type { Register } from 'claude-code'
 
 import { checkKey, isOnlyWaiting } from './rules.ts'
 
-// Anti-polling guard. In one measured week of the author's sessions, repeated
+// Anti-polling guard. In one measured week of my sessions, repeated
 // checks and sleeps were 1,183 turns (6.4% of all input tokens), and every turn
 // re-reads the whole context. Blocks two patterns, in the main session and in
 // subagents:

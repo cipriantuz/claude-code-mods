@@ -12,7 +12,7 @@ import {
   question,
 } from './note.ts'
 
-// Handoff. In one measured week of the author's sessions, 40 resumes after a pause
+// Handoff. In one measured week of my sessions, 40 resumes after a pause
 // of more than an hour each re-wrote ~290k tokens into the cache (30% of all
 // cache_creation), because the prompt cache lives for one hour. On the first prompt
 // after such a pause, with a large context, it asks whether to start a new session
