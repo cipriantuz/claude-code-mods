@@ -1,0 +1,15 @@
+{
+  "name": "claude-code-mods",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Claude Code mods: anti-polling, session handoff, compaction, multi-session awareness, phone approval channel, Windows path guard",
+  "license": "MIT",
+  "author": "Ciprian Tuzaru",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/test-all.mjs"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}
