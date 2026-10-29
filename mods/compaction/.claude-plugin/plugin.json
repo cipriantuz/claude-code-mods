@@ -1,0 +1,9 @@
+{
+  "name": "compaction",
+  "version": "0.1.0",
+  "description": "The compact tool: the model requests /compact at the end of a task (context >= 150k); the compaction runs after the turn",
+  "author": {
+    "name": "Ciprian Tuzaru"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "windows-paths",
+  "version": "0.1.0",
+  "description": "Blocks Bash commands that put backslash Windows paths into a heredoc, printf or echo -e, where the backslashes do not arrive untouched",
+  "author": {
+    "name": "Ciprian Tuzaru"
+  },
+  "license": "MIT"
+}
