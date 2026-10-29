@@ -70,6 +70,7 @@ The runner calls `claude plugin test` on every mod folder (Claude Code's own mod
 
 ## Limitations
 
+- The author's setup has 7 mods; this repository contains the 6 general-purpose ones and leaves out one tied to a private service.
 - The mod API is specific to Claude Code and versioned with it; these mods were written and tested against 2.1.x.
 - Tested mainly on Windows 11 (Git Bash and PowerShell tools), the author's environment. The dispatcher has POSIX locking code, exercised only by CI.
 - anti-polling does not catch alternating checks; handoff does not ask after `claude --resume`; sessions cannot delete old status files; on a public ntfy server the topic is the only access control. Details in each mod's README.
